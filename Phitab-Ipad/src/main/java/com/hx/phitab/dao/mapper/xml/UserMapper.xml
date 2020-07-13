@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:该mapper.xml映射文件的 唯一标识 -->
+<mapper namespace="com.hx.phitab.dao.mapper.UserMapper">
+	<!-- 表与实体字段的映射 -->
+	<resultMap id="BaseResultMap" type="com.hx.phitab.model.User">
+		<id column="id" jdbcType="VARCHAR" property="id" />
+	    <result column="isDel" jdbcType="INTEGER" property="isDel"/>
+	    <result column="account" jdbcType="VARCHAR" property="account"/>
+	    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+	    <result column="name" jdbcType="VARCHAR" property="name"/>
+	    <result column="createTime" jdbcType="TIMESTAMP" property="createTime"/>
+  	</resultMap>
+
+	<!-- 整个实体类修改，表字段=实体类字段-->
+	<sql id="Update_Column_All">
+		<trim prefixOverrides=",">
+			,isDel = #{isDel},account = #{account},remark = #{remark},name = #{name},createTime = #{createTime}
+		</trim>
+	</sql>
+	 
+	<!--  后续通过  namespace.id-->
+	<!--parameterType:输入参数的类型
+	resultType：查询返回结果值的类型  ，返回类型  -->
+	<insert id="insert" parameterType="com.hx.phitab.model.User">
+	    <selectKey keyProperty="id" resultType="String" order="BEFORE">
+			select replace(uuid(),'-','') from dual
+		</selectKey>
+	    insert into user (id,isDel,account,remark,name,createTime)
+	    values (#{id},#{isDel},#{account},#{remark},#{name},#{createTime})
+	</insert>
+
+	<select id="selectList" resultMap="BaseResultMap" parameterType="com.hx.mybatisTool.SqlParam" >
+		select 
+			id,isDel,account,remark,name,createTime
+		from user
+			WHERE ${whereSentence}
+	</select>
+
+	<select id="selectOne" resultMap="BaseResultMap" parameterType="com.hx.mybatisTool.SqlParam" >
+		select 
+			id,isDel,account,remark,name,createTime
+		from user
+		    WHERE ${whereSentence}
+			LIMIT 1
+	</select>
+
+	<select id="selectOneByKey" resultMap="BaseResultMap" parameterType="java.lang.Object" >
+		select 
+			id,isDel,account,remark,name,createTime
+		from user
+		WHERE id = #{value}
+	</select>
+</mapper>
